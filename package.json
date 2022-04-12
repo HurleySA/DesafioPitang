@@ -4,14 +4,11 @@
   "description": "System to manage appointments for covid-19",
   "main": "index.js",
   "scripts": {
-    "dev":"nodemon",
+    "dev": "nodemon",
     "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HurleySA/DesafioPitang.git"
-  },
+  "repository": "git+https://github.com/HurleySA/DesafioPitang.git",
   "author": "Matheus Eduardo",
   "license": "MIT",
   "bugs": {
@@ -27,6 +24,7 @@
     "prisma": "^3.12.0"
   },
   "devDependencies": {
+    "eslint": "^8.13.0",
     "nodemon": "^2.0.15"
   },
   "type": "module"
