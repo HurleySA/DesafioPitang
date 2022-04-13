@@ -26,6 +26,14 @@ interface ICreateVaccineSchedule {
 }
 
 class VaccineScheduleService {
+    async listVaccineSchedule():Promise<VaccineSchedule[]> {
+        const schedules = await prismaClient.vaccineSchedule.findMany({
+            orderBy: {
+                vaccination_date: 'asc'
+            }
+        })
+        return schedules;
+    }
     async createVaccineSchedule({ name, born_date, vaccination_date }: ICreateVaccineSchedule): Promise<VaccineSchedule>{
         const validation = schema.validate({ name, born_date, vaccination_date },{
             abortEarly:false
