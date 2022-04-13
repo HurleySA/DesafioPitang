@@ -8,10 +8,30 @@ interface ICreateVaccineSchedule {
     "vaccination_date": Date;
 
 }
+
+interface IUpdateVaccineSchedule {
+    "name"?: string;
+    "born_date"?: Date;
+    "vaccination_date"?: Date;
+    "vaccinated": boolean,
+	"conclusion": string,
+}
 const vaccineScheduleService = new VaccineScheduleService();
 
 export class VaccineScheduleController {
-    async listVaccineSchedule(request: Request, response: Response) {
+    async updateSchedule(request: Request, response: Response):Promise<Response>{
+        try{
+            const { schedule_id }  = request.params;
+            const data: IUpdateVaccineSchedule = request.body;
+            const schedule = await vaccineScheduleService.updateSchedule(schedule_id, data);
+            return response.status(200).send(schedule);
+            
+      
+          }catch(err){
+            return response.status(400).json({ error: err.message })
+          }
+    }
+    async listVaccineSchedule(request: Request, response: Response): Promise<Response> {
         try{
             const schedules = await vaccineScheduleService.listVaccineSchedule();
             return response.status(200).send(schedules);
