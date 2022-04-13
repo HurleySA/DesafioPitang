@@ -20,7 +20,7 @@ export class VaccineScheduleController {
             if(err instanceof AppError){
                 return response.status(err.statusCode).json({error: err.message});
             }
-                return response.status(500).json({error: "Something went wrong."});
+                return response.status(500).json({error: err, message: err.message});
         }
     }
 
