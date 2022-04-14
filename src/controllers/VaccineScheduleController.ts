@@ -28,7 +28,13 @@ export class VaccineScheduleController {
             
       
           }catch(err){
-            return response.status(400).json({ error: err.message })
+            if(err instanceof AppError){
+                return response.status(err.statusCode).json({error: err.message});
+            }else if(err instanceof Error){
+                return response.status(500).json({error: err.message});
+            }
+            const errorMessage = "Failed to do something exceptional"
+                return response.status(500).json({error: errorMessage});
           }
     }
     async listVaccineSchedule(request: Request, response: Response): Promise<Response> {
@@ -39,7 +45,13 @@ export class VaccineScheduleController {
             if(err instanceof AppError){
                 return response.status(err.statusCode).json({error: err.message});
             }
-                return response.status(500).json({error: err, message: err.message});
+            if(err instanceof AppError){
+                return response.status(err.statusCode).json({error: err.message});
+            }else if(err instanceof Error){
+                return response.status(500).json({error: err.message});
+            }
+            const errorMessage = "Failed to do something exceptional"
+                return response.status(500).json({error: errorMessage});
         }
     }
     async createVaccineSchedule(request: Request, response: Response): Promise<Response> {
@@ -50,8 +62,12 @@ export class VaccineScheduleController {
         }catch(err){
             if(err instanceof AppError){
                 return response.status(err.statusCode).json({error: err.message});
+            }else if(err instanceof Error){
+                return response.status(500).json({error: err.message});
             }
-                return response.status(500).json({error: err, message: err.message});
+            const errorMessage = "Failed to do something exceptional"
+                return response.status(500).json({error: errorMessage});
+                
         }
     }
 
