@@ -4,7 +4,7 @@ import { endOfDay, startOfDay, subHours } from "date-fns";
 import Joi from "joi";
 import { prismaClient } from "../database/prismaClient";
 import { AppError } from "../erros/AppError";
-//
+
 let availableHours: number[] = [];
 for(let i = +process.env.FIRST_HOUR_SERVICE!; i <= +process.env.LAST_HOUR_SERVICE!; i++){
     availableHours.push(i);
