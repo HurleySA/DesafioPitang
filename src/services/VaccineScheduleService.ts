@@ -1,6 +1,6 @@
 
 import { VaccineSchedule } from "@prisma/client";
-import { endOfDay, startOfDay } from "date-fns";
+import { endOfDay, startOfDay, subHours } from "date-fns";
 import Joi from "joi";
 import { prismaClient } from "../database/prismaClient";
 import { AppError } from "../erros/AppError";
@@ -12,16 +12,16 @@ for(let i = +process.env.FIRST_HOUR_SERVICE!; i <= +process.env.LAST_HOUR_SERVIC
 
 const schema = Joi.object({
     name: Joi.string().min(5).required(),
-    born_date: Joi.date().iso().less('now').required(),
-    vaccination_date: Joi.date().iso().min('now').required(),
+    born_date: Joi.date().iso().required(),
+    vaccination_date: Joi.date().iso().required(),
     vaccinated: Joi.boolean().default(false),
     conclusion: Joi.string().allow(null),
 })
 
 const schemaUpdate = Joi.object({
     name: Joi.string().min(5),
-    born_date: Joi.date().iso().less('now'),
-    vaccination_date: Joi.date().iso().min('now'),
+    born_date: Joi.date().iso(),
+    vaccination_date: Joi.date().iso(),
     vaccinated: Joi.boolean().required(),
     conclusion: Joi.string().required(),
 })
@@ -57,13 +57,22 @@ class VaccineScheduleService {
         if(validation.error) {
             throw new AppError(validation.error.message, 400);
         }
-        if(vaccination_date) await this.verifyHasVaccation(vaccination_date);
+        let vaccinationDate = vaccination_date;
+        if(vaccination_date && born_date)this.verifyDates(vaccination_date, born_date);
+        if(vaccination_date){
+            vaccinationDate = new Date(vaccination_date)
+            vaccinationDate.setMinutes(0)
+            vaccinationDate.setSeconds(0)
+            vaccinationDate.setMilliseconds(0)
+            await this.verifyHasVaccation(vaccinationDate);
+        } 
+        
         const newSchedule = await prismaClient.vaccineSchedule.update({
             where: { id: schedule_id },
             data: { 
                 name,
                 born_date,
-                vaccination_date,
+                vaccination_date: vaccinationDate,
                 vaccinated,
                 conclusion: vaccinated ? conclusion : null,
             },
@@ -87,13 +96,11 @@ class VaccineScheduleService {
             throw new AppError(validation.error.message, 400);
         }
         const vaccinationDate = new Date(vaccination_date)
+        this.verifyDates(vaccinationDate, born_date);
         vaccinationDate.setMinutes(0)
         vaccinationDate.setSeconds(0)
-
-        if(!availableHours.includes(vaccinationDate.getUTCHours())){
-            throw new AppError("Outside vaccination hours.")
-        }
-
+        vaccinationDate.setMilliseconds(0)
+        
         await this.verifyHasVaccation(vaccinationDate);
 
         const vaccineSchedule = await prismaClient.vaccineSchedule.create({
@@ -107,25 +114,44 @@ class VaccineScheduleService {
     }
 
     async verifyHasVaccation(vaccinationDate: Date): Promise<void>{
+        const vaccination = new Date(vaccinationDate);
         const schedulesByHours = await prismaClient.vaccineSchedule.findMany({
             where: {
-                vaccination_date: vaccinationDate
+                vaccination_date: vaccination
             }
         })
     
         if(schedulesByHours.length >= +process.env.MAX_SCHEDULES_BY_HOUR!){
             throw new AppError("Already have 2 reservations at this hour.", 403)
         }
+        const begin = (subHours(startOfDay(vaccination), vaccination.getTimezoneOffset() / 60))
+        const end = (subHours(endOfDay(vaccination), vaccination.getTimezoneOffset() / 60))
         const schedules = await prismaClient.vaccineSchedule.findMany({
             where:{
                 vaccination_date:{
-                    gte: startOfDay(new Date(vaccinationDate)),
-                    lt: endOfDay(new Date(vaccinationDate))
+                    gte: begin,
+                    lt: end
                 }
             }
         });
         if(schedules.length >= +process.env.MAX_SCHEDULES_BY_DAY!){
             throw new AppError("Already have 20 reservations at this day.", 403)
+        }
+    }
+    verifyDates(vaccinationDate: Date, born_date: Date){
+        const now = new Date();
+        const vaccination = new Date(vaccinationDate);
+        const born = new Date(born_date);
+        if(vaccination < subHours(now,now.getTimezoneOffset()/60)){
+            throw new AppError("The Vaccination date cannot be in the past.")
+        }
+
+        if(born > subHours(now,now.getTimezoneOffset()/60)){
+            throw new AppError("Do you came from future?")
+        }
+
+        if(!availableHours.includes(vaccination.getUTCHours())){
+            throw new AppError("Outside vaccination hours.")
         }
     }
 }
