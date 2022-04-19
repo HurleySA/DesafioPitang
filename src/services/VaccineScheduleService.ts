@@ -124,8 +124,8 @@ class VaccineScheduleService {
         if(schedulesByHours.length >= +process.env.MAX_SCHEDULES_BY_HOUR!){
             throw new AppError("Already have 2 reservations at this hour.", 403)
         }
-        const begin = (subHours(startOfDay(vaccination), vaccination.getTimezoneOffset() / 60))
-        const end = (subHours(endOfDay(vaccination), vaccination.getTimezoneOffset() / 60))
+        const begin = (subHours(startOfDay(vaccination), 3))
+        const end = (subHours(endOfDay(vaccination), 3))
         const schedules = await prismaClient.vaccineSchedule.findMany({
             where:{
                 vaccination_date:{
@@ -141,12 +141,13 @@ class VaccineScheduleService {
     verifyDates(vaccinationDate: Date, born_date: Date){
         const now = new Date();
         const vaccination = new Date(vaccinationDate);
+        console.log(vaccination, subHours(now,3))
         const born = new Date(born_date);
-        if(vaccination < subHours(now,now.getTimezoneOffset()/60)){
+        if(vaccination < subHours(now,3)){
             throw new AppError("The Vaccination date cannot be in the past.")
         }
 
-        if(born > subHours(now,now.getTimezoneOffset()/60)){
+        if(born > subHours(now,3)){
             throw new AppError("Do you came from future?")
         }
 

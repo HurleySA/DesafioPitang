@@ -5,4 +5,5 @@ const router = Router();
 
 router.use("/vaccineSchedule", vaccineScheduleRoutes);
 
+
 export default router;
