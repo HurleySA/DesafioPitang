@@ -3,7 +3,7 @@ import crypto from 'crypto'
 import { config } from 'dotenv'
 import util from 'util'
 
-const prismaBinary = './node_modules/.bin/prisma'
+const prismaBinary = '.\\node_modules\\.bin\\prisma'
 
 export default async () => {
   console.info('\nMontando suíte de testes...')

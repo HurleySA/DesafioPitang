@@ -19,6 +19,22 @@ interface IUpdateVaccineSchedule {
 const vaccineScheduleService = new VaccineScheduleService();
 
 export class VaccineScheduleController {
+    async deleteSchedule(request: Request, response: Response):Promise<Response> {
+        try{
+            const { schedule_id }  = request.params;
+            const schedule = await vaccineScheduleService.deleteSchedule(schedule_id);
+            return response.status(200).send(schedule);
+        
+          }catch(err){
+            if(err instanceof AppError){
+                return response.status(err.statusCode).json({error: err.message});
+            }else if(err instanceof Error){
+                return response.status(500).json({error: err.message});
+            }
+            const errorMessage = "Failed to do something exceptional"
+                return response.status(500).json({error: errorMessage});
+          }
+    }
     async updateSchedule(request: Request, response: Response):Promise<Response>{
         try{
             const { schedule_id }  = request.params;

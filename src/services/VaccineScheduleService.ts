@@ -42,6 +42,21 @@ interface IUpdateVaccineSchedule {
 }
 
 class VaccineScheduleService {
+    async deleteSchedule(schedule_id: string): Promise<VaccineSchedule> {
+        const schedule = await prismaClient.vaccineSchedule.findUnique({
+            where:{
+                id:schedule_id
+            }
+        })
+        if(!schedule){
+            throw new AppError("Schedule not found.", 404);
+        }
+
+        const newSchedule = await prismaClient.vaccineSchedule.delete({
+            where: { id: schedule_id }
+        })
+        return newSchedule;
+    }
     async updateSchedule(schedule_id: string, {name, born_date, vaccination_date, vaccinated, conclusion}:IUpdateVaccineSchedule): Promise<VaccineSchedule> {
         const schedule = await prismaClient.vaccineSchedule.findUnique({
             where:{
