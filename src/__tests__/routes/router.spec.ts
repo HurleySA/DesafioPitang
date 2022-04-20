@@ -305,7 +305,7 @@ describe("[DELETE] /vaccineSchedules", () => {
   it("should not be able to delete non exist schedule", async () => {
     const randomUuid = randomUUID();
     await request(app)
-      .get(`/api/vaccineSchedule/${randomUuid}`)
+      .delete(`/api/vaccineSchedule/${randomUuid}`)
       .expect(404);
   });
   it("should be able to delete a existing schedule", async () => {
@@ -319,10 +319,161 @@ describe("[DELETE] /vaccineSchedules", () => {
       .expect(201);
 
     await request(app)
-      .get(`/api/vaccineSchedule/${response.body.id}`)
-      .expect(404);
+      .delete(`/api/vaccineSchedule/${response.body.id}`)
+      .expect(200);
   });
 
 })
+
+describe("[PUT] /vaccineSchedules", () => {
+  const randomUuid = randomUUID();
+  it("should not be able to update non exist schedule", async () => {
+    await request(app)
+      .put(`/api/vaccineSchedule/${randomUuid}`)
+      .send({
+        name: 'Hurley',
+        born_date: '1997-06-30T14:00:00.000Z',
+        vaccination_date: '2029-10-20T13:00:00.000Z',
+        vaccinated: true,
+        conclusion: "Paciente Vacinado",
+      })
+      .expect(404);
+  });
+
+  it("should be able to update a existing schedule", async () => {
+    const response = await request(app)
+      .post("/api/vaccineSchedule")
+      .send({
+          name:"Eduardo",
+          born_date:"1997-06-30T14:00:00.000Z",
+          vaccination_date:"2029-05-20T15:10:00.000Z",
+      })
+      .expect(201);
+
+    await request(app)
+      .put(`/api/vaccineSchedule/${response.body.id}`)
+      .send({
+        name: 'Hurley',
+        born_date: '1997-06-30T14:00:00.000Z',
+        vaccination_date: '2029-10-20T13:00:00.000Z',
+        vaccinated: true,
+        conclusion: "Paciente Vacinado",
+      })
+      .expect(200);
+  });
+
+  it("should not be able to update a existing schedule to a name with less than 5 characteres", async () => {
+    const response = await request(app)
+      .post("/api/vaccineSchedule")
+      .send({
+          name:"Eduardo",
+          born_date:"1997-06-30T14:00:00.000Z",
+          vaccination_date:"2029-05-20T15:10:00.000Z",
+      })
+      .expect(201);
+
+    await request(app)
+      .put(`/api/vaccineSchedule/${response.body.id}`)
+      .send({
+        name: 'Hur',
+        born_date: '1997-06-30T14:00:00.000Z',
+        vaccination_date: '2029-10-20T13:00:00.000Z',
+        vaccinated: true,
+        conclusion: "Paciente Vacinado",
+      })
+      .expect(400);
+  });
+
+  it("should not be able to update a vaccine schedule when born date is on the future", async () => {
+    const response = await request(app)
+      .post("/api/vaccineSchedule")
+      .send({
+          name:"Eduardo",
+          born_date:"1997-06-30T14:00:00.000Z",
+          vaccination_date:"2029-05-20T15:10:00.000Z",
+      })
+      .expect(201);
+
+    await request(app)
+      .put(`/api/vaccineSchedule/${response.body.id}`)
+      .send({
+        name: 'Hurley',
+        born_date: '029-05-20T13:10:00.000Z',
+        vaccination_date: '2029-10-20T13:00:00.000Z',
+        vaccinated: true,
+        conclusion: "Paciente Vacinado",
+      })
+      .expect(400);
+
+  });
+
+  it("should not be able to update a vaccine schedule when vaccination date is on the past", async () => {
+    const response = await request(app)
+      .post("/api/vaccineSchedule")
+      .send({
+          name:"Eduardo",
+          born_date:"1997-06-30T14:00:00.000Z",
+          vaccination_date:"2029-05-20T15:10:00.000Z",
+      })
+      .expect(201);
+
+    await request(app)
+      .put(`/api/vaccineSchedule/${response.body.id}`)
+      .send({
+        name: 'Hurley',
+        born_date: '029-05-20T13:10:00.000Z',
+        vaccination_date:"1997-06-30T14:00:00.000Z",
+        vaccinated: true,
+        conclusion: "Paciente Vacinado",
+      })
+      .expect(400);
+
+  });
+
+  it("should not be able to update a vaccine schedule when already exist 2 schedule in the same hour ", async () => {
+    await request(app)
+      .post("/api/vaccineSchedule")
+      .send({
+          name:"Eduardo",
+          born_date:"1997-06-30T14:00:00.000Z",
+          vaccination_date:"2029-05-20T13:10:00.000Z",
+      })
+      .expect(201);
+
+      await request(app)
+      .post("/api/vaccineSchedule")
+      .send({
+          name:"Eduardo",
+          born_date:"1997-06-30T14:00:00.000Z",
+          vaccination_date:"2029-05-20T13:10:00.000Z",
+      })
+      .expect(201);
+
+      const response = await request(app)
+      .post("/api/vaccineSchedule")
+      .send({
+          name:"Eduardo",
+          born_date:"1997-06-30T14:00:00.000Z",
+          vaccination_date:"2029-05-20T15:10:00.000Z",
+      })
+      .expect(201);
+
+      await request(app)
+      .put(`/api/vaccineSchedule/${response.body.id}`)
+      .send({
+        vaccination_date:"2029-05-20T13:10:00.000Z",
+        vaccinated: true,
+        conclusion: "Paciente Vacinado",
+      })
+      .expect(403);
+  });
+
+})
+
+
+
+
+
+
 
 
