@@ -1,8 +1,5 @@
 import request from "supertest";
 import { app } from "../../server";
-import { VaccineScheduleService } from "../../services/VaccineScheduleService";
-
-const vaccineScheduleService = new VaccineScheduleService();
 
 describe("[POST] /users", () => {
     it("should be able to create new vaccine schedule", async () => {
