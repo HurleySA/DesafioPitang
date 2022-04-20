@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "ts-node-dev --exit-child --transpile-only --ignore-watch node_modules src/server.ts",
     "start": "node --loader ts-node/esm ./dist/server.js",
-    "build": "tsc && yarn prisma migrate deploy"
+    "build": "tsc && yarn prisma migrate deploy",
+    "test": "jest --detectOpenHandles"
   },
   "dependencies": {
     "@prisma/client": "^3.12.0",
+    "@types/babel__generator": "^7.6.4",
     "cors": "^2.8.5",
     "date-fns": "^2.28.0",
     "dotenv": "^16.0.0",
@@ -24,8 +26,13 @@
   "devDependencies": {
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
+    "@types/jest": "^27.4.1",
     "@types/node": "^17.0.23",
-    "prisma": "^3.12.0"
+    "@types/supertest": "^2.0.12",
+    "jest": "^27.5.1",
+    "prisma": "^3.12.0",
+    "supertest": "^6.2.2",
+    "ts-jest": "^27.1.4"
   },
   "engines": {
     "node": "16.x"
