@@ -8,7 +8,7 @@
     "start": "node --loader ts-node/esm ./dist/server.js",
     "build": "tsc && yarn prisma migrate deploy",
     "pretest": "docker-compose up -d database_test",
-    "test": "jest -i",
+    "test": "jest --forceExit -i",
     "posttest": "docker-compose stop database_test"
   },
   "dependencies": {
@@ -39,5 +39,6 @@
   },
   "engines": {
     "node": "16.x"
-  }
+  },
+  "type":"module"
 }

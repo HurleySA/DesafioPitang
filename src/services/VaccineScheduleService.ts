@@ -156,7 +156,6 @@ class VaccineScheduleService {
     verifyDates(vaccinationDate: Date, born_date: Date){
         const now = new Date();
         const vaccination = new Date(vaccinationDate);
-        console.log(vaccination, subHours(now,3))
         const born = new Date(born_date);
         if(vaccination < subHours(now,3)){
             throw new AppError("The Vaccination date cannot be in the past.")
