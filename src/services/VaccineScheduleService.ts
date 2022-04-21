@@ -22,8 +22,8 @@ const schemaUpdate = Joi.object({
     name: Joi.string().min(5),
     born_date: Joi.date().iso(),
     vaccination_date: Joi.date().iso(),
-    vaccinated: Joi.boolean().required(),
-    conclusion: Joi.string().required(),
+    vaccinated: Joi.boolean(),
+    conclusion: Joi.string().allow(null),
 })
 
 interface ICreateVaccineSchedule {
