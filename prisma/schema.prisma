@@ -1,19 +1,18 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model VaccineSchedule {
-    id               String   @id @default(uuid())
-    name             String
-    born_date        DateTime
-    vaccination_date DateTime
-    vaccinated       Boolean  @default(false)
-    conclusion       String?
-    created_at       DateTime @default(now())
-
+  id               String   @id @default(uuid())
+  name             String
+  born_date        DateTime
+  vaccination_date DateTime
+  vaccinated       Boolean  @default(false)
+  conclusion       String?
+  created_at       DateTime @default(now())
 }
