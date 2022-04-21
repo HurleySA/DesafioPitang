@@ -9,4 +9,5 @@ var vaccineScheduleController = new VaccineScheduleController_1.VaccineScheduleC
 vaccineScheduleRoutes.post('/', vaccineScheduleController.createVaccineSchedule);
 vaccineScheduleRoutes.get('/', vaccineScheduleController.listVaccineSchedule);
 vaccineScheduleRoutes.put('/:schedule_id', vaccineScheduleController.updateSchedule);
+vaccineScheduleRoutes["delete"]('/:schedule_id', vaccineScheduleController.deleteSchedule);
 //# sourceMappingURL=vaccineSchedule.routes.js.map

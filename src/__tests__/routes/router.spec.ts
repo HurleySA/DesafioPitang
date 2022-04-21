@@ -1,7 +1,12 @@
-import { randomUUID } from "crypto";
+/* import { randomUUID } from "crypto";
 import request from "supertest";
 import { prismaClient } from "../../database/prismaClient";
-import { app } from "../../server";
+import { app } from "../../server"; */
+
+const {randomUUID} = require('crypto');
+const request = require('supertest');
+const {prismaClient} = require('../../database/prismaClient');
+const {app} = require('../../server');
 
 
 beforeEach(async () => {

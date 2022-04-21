@@ -43,16 +43,15 @@ var vaccineScheduleService = new VaccineScheduleService_1.VaccineScheduleService
 var VaccineScheduleController = /** @class */ (function () {
     function VaccineScheduleController() {
     }
-    VaccineScheduleController.prototype.updateSchedule = function (request, response) {
+    VaccineScheduleController.prototype.deleteSchedule = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var schedule_id, data, schedule, err_1, errorMessage;
+            var schedule_id, schedule, err_1, errorMessage;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
                         schedule_id = request.params.schedule_id;
-                        data = request.body;
-                        return [4 /*yield*/, vaccineScheduleService.updateSchedule(schedule_id, data)];
+                        return [4 /*yield*/, vaccineScheduleService.deleteSchedule(schedule_id)];
                     case 1:
                         schedule = _a.sent();
                         return [2 /*return*/, response.status(200).send(schedule)];
@@ -71,22 +70,21 @@ var VaccineScheduleController = /** @class */ (function () {
             });
         });
     };
-    VaccineScheduleController.prototype.listVaccineSchedule = function (request, response) {
+    VaccineScheduleController.prototype.updateSchedule = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var schedules, err_2, errorMessage;
+            var schedule_id, data, schedule, err_2, errorMessage;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         _a.trys.push([0, 2, , 3]);
-                        return [4 /*yield*/, vaccineScheduleService.listVaccineSchedule()];
+                        schedule_id = request.params.schedule_id;
+                        data = request.body;
+                        return [4 /*yield*/, vaccineScheduleService.updateSchedule(schedule_id, data)];
                     case 1:
-                        schedules = _a.sent();
-                        return [2 /*return*/, response.status(200).send(schedules)];
+                        schedule = _a.sent();
+                        return [2 /*return*/, response.status(200).send(schedule)];
                     case 2:
                         err_2 = _a.sent();
-                        if (err_2 instanceof AppError_1.AppError) {
-                            return [2 /*return*/, response.status(err_2.statusCode).json({ error: err_2.message })];
-                        }
                         if (err_2 instanceof AppError_1.AppError) {
                             return [2 /*return*/, response.status(err_2.statusCode).json({ error: err_2.message })];
                         }
@@ -100,9 +98,35 @@ var VaccineScheduleController = /** @class */ (function () {
             });
         });
     };
+    VaccineScheduleController.prototype.listVaccineSchedule = function (request, response) {
+        return __awaiter(this, void 0, void 0, function () {
+            var schedules, err_3, errorMessage;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        _a.trys.push([0, 2, , 3]);
+                        return [4 /*yield*/, vaccineScheduleService.listVaccineSchedule()];
+                    case 1:
+                        schedules = _a.sent();
+                        return [2 /*return*/, response.status(200).send(schedules)];
+                    case 2:
+                        err_3 = _a.sent();
+                        if (err_3 instanceof AppError_1.AppError) {
+                            return [2 /*return*/, response.status(err_3.statusCode).json({ error: err_3.message })];
+                        }
+                        else if (err_3 instanceof Error) {
+                            return [2 /*return*/, response.status(500).json({ error: err_3.message })];
+                        }
+                        errorMessage = "Failed to do something exceptional";
+                        return [2 /*return*/, response.status(500).json({ error: errorMessage })];
+                    case 3: return [2 /*return*/];
+                }
+            });
+        });
+    };
     VaccineScheduleController.prototype.createVaccineSchedule = function (request, response) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, name, born_date, vaccination_date, vaccineSchedule, err_3, errorMessage;
+            var _a, name, born_date, vaccination_date, vaccineSchedule, err_4, errorMessage;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -113,12 +137,12 @@ var VaccineScheduleController = /** @class */ (function () {
                         vaccineSchedule = _b.sent();
                         return [2 /*return*/, response.status(201).send(vaccineSchedule)];
                     case 2:
-                        err_3 = _b.sent();
-                        if (err_3 instanceof AppError_1.AppError) {
-                            return [2 /*return*/, response.status(err_3.statusCode).json({ error: err_3.message })];
+                        err_4 = _b.sent();
+                        if (err_4 instanceof AppError_1.AppError) {
+                            return [2 /*return*/, response.status(err_4.statusCode).json({ error: err_4.message })];
                         }
-                        else if (err_3 instanceof Error) {
-                            return [2 /*return*/, response.status(500).json({ error: err_3.message })];
+                        else if (err_4 instanceof Error) {
+                            return [2 /*return*/, response.status(500).json({ error: err_4.message })];
                         }
                         errorMessage = "Failed to do something exceptional";
                         return [2 /*return*/, response.status(500).json({ error: errorMessage })];

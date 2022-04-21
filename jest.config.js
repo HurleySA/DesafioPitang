@@ -1,4 +1,4 @@
-export default {
+module.exports = {
   globalSetup: '<rootDir>/jest.global-setup.js',
   globalTeardown: '<rootDir>/jest.global-teardown.js',
   preset: 'ts-jest',
@@ -7,4 +7,5 @@ export default {
   clearMocks: true,
   coverageProvider: "v8",
   verbose: true,
+
 }

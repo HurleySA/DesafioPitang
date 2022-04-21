@@ -1,6 +1,6 @@
-import pg from 'pg'
+const pg = require('pg')
 
-export default async () => {
+module.exports =  async () => {
   console.info('\nDeletando schema...')
 
   const client = new pg.Client({

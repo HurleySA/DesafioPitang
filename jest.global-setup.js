@@ -1,11 +1,12 @@
-import { exec } from 'child_process'
-import crypto from 'crypto'
-import { config } from 'dotenv'
-import util from 'util'
+const { exec } = require('child_process');
+const crypto = require('crypto');
+const { config } = require('dotenv');
+const util = require('util');
+
 
 const prismaBinary = '.\\node_modules\\.bin\\prisma'
 
-export default async () => {
+module.exports =  async () => {
   console.info('\nMontando suíte de testes...')
 
   config({ path: '.env.test' })
@@ -20,3 +21,4 @@ export default async () => {
 
   console.info('Suíte pronta. Iniciando testes...\n')
 }
+

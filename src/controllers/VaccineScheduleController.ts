@@ -1,21 +1,9 @@
 
 import { Request, Response } from "express";
 import { AppError } from "../erros/AppError";
+import { ICreateVaccineSchedule, IUpdateVaccineSchedule } from "../helpers/dto";
 import { VaccineScheduleService } from "../services/VaccineScheduleService";
-interface ICreateVaccineSchedule {
-    "name": string;
-    "born_date": Date;
-    "vaccination_date": Date;
 
-}
-
-interface IUpdateVaccineSchedule {
-    "name"?: string;
-    "born_date"?: Date;
-    "vaccination_date"?: Date;
-    "vaccinated": boolean,
-	"conclusion": string,
-}
 const vaccineScheduleService = new VaccineScheduleService();
 
 export class VaccineScheduleController {
@@ -58,9 +46,6 @@ export class VaccineScheduleController {
             const schedules = await vaccineScheduleService.listVaccineSchedule();
             return response.status(200).send(schedules);
         }catch(err){
-            if(err instanceof AppError){
-                return response.status(err.statusCode).json({error: err.message});
-            }
             if(err instanceof AppError){
                 return response.status(err.statusCode).json({error: err.message});
             }else if(err instanceof Error){

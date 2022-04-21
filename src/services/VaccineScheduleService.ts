@@ -1,45 +1,16 @@
 
 import { VaccineSchedule } from "@prisma/client";
 import { endOfDay, startOfDay, subHours } from "date-fns";
-import Joi from "joi";
 import { prismaClient } from "../database/prismaClient";
 import { AppError } from "../erros/AppError";
+import { ICreateVaccineSchedule, IUpdateVaccineSchedule } from "../helpers/dto";
+import { schemaCreate, schemaUpdate } from "../helpers/schemas";
 
 let availableHours: number[] = [];
 for(let i = +process.env.FIRST_HOUR_SERVICE!; i <= +process.env.LAST_HOUR_SERVICE!; i++){
     availableHours.push(i);
 }
 
-const schema = Joi.object({
-    name: Joi.string().min(5).required(),
-    born_date: Joi.date().iso().required(),
-    vaccination_date: Joi.date().iso().required(),
-    vaccinated: Joi.boolean().default(false),
-    conclusion: Joi.string().allow(null),
-})
-
-const schemaUpdate = Joi.object({
-    name: Joi.string().min(5),
-    born_date: Joi.date().iso(),
-    vaccination_date: Joi.date().iso(),
-    vaccinated: Joi.boolean(),
-    conclusion: Joi.string().allow(null),
-})
-
-interface ICreateVaccineSchedule {
-    "name": string;
-    "born_date": Date;
-    "vaccination_date": Date;
-
-}
-
-interface IUpdateVaccineSchedule {
-    "name"?: string;
-    "born_date"?: Date;
-    "vaccination_date"?: Date;
-    "vaccinated": boolean,
-	"conclusion": string,
-}
 
 class VaccineScheduleService {
     async deleteSchedule(schedule_id: string): Promise<VaccineSchedule> {
@@ -104,7 +75,7 @@ class VaccineScheduleService {
         return schedules;
     }
     async createVaccineSchedule({ name, born_date, vaccination_date }: ICreateVaccineSchedule): Promise<VaccineSchedule>{
-        const validation = schema.validate({ name, born_date, vaccination_date },{
+        const validation = schemaCreate.validate({ name, born_date, vaccination_date },{
             abortEarly:false
         })
         if(validation.error) {
@@ -112,9 +83,7 @@ class VaccineScheduleService {
         }
         const vaccinationDate = new Date(vaccination_date)
         this.verifyDates(vaccinationDate, born_date);
-        vaccinationDate.setMinutes(0)
-        vaccinationDate.setSeconds(0)
-        vaccinationDate.setMilliseconds(0)
+        vaccinationDate.setMinutes(0,0,0)
         
         await this.verifyHasVaccation(vaccinationDate);
 
